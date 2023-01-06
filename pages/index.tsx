@@ -43,10 +43,10 @@ export default function Home() {
         <div className='text-xl mt-2'>
           <h2 className='text-2xl'>レシピ</h2>
           <p>1ドリップ目: {calcGram*0.15} g</p>
-          <p>2ドリップ目: {calcGram*0.15} g</p>
-          <p>3ドリップ目: {calcGram*0.15} g</p>
-          <p>4ドリップ目: {calcGram*0.25} g</p>
-          <p>5ドリップ目: {calcGram*0.3} g</p>
+          <p>2ドリップ目: {calcGram*0.3} g (+{calcGram*0.15}g)</p>
+          <p>3ドリップ目: {calcGram*0.45} g (+{calcGram*0.15}g)</p>
+          <p>4ドリップ目: {calcGram*0.7} g (+{calcGram*0.25}g)</p>
+          <p>5ドリップ目: {calcGram} g (+{calcGram*0.3}g)</p>
         </div>
         </div>
       </main>
