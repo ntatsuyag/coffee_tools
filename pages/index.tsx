@@ -44,10 +44,10 @@ export default function Home() {
             <button onClick={()=>setCoffeeGram(() => 40)} className='bg-zinc-500 hover:bg-amber-600 text-white font-bold py-2 px-2 my-2 mr-2 rounded focus:outline-none focus:shadow-outline'>40g</button>
           </div>
           <button onClick={updateGram} className='bg-amber-600 hover:bg-amber-800 text-white text-lg font-bold py-2 px-2 mt-2 rounded focus:outline-none focus:shadow-outline'>計算</button>
-          <p className='mt-2'>コーヒー:水 = 1:{ratio} の割合で水量を計算します。</p>
+          <p className='mt-2 text-lg'>コーヒー:水 = 1:{ratio} の割合で水量を計算します。</p>
           <div className='text-xl mt-2'>
-            <h2 className='text-2xl'>コーヒを除いた水量</h2>
-            <p className='my-2 border-b-2 border-zinc-500'>全体の水量: {calcGram} g</p>
+            <h2 className='text-2xl border-b-4 border-amber-800'>レシピ</h2>
+            <p className='my-2 border-b-2 border-zinc-600 '>全水量: {calcGram} g</p>
             <p>1ドリップ目: {calcGram*0.15} g</p>
             <p>2ドリップ目: {calcGram*0.3} g (+{calcGram*0.15}g)</p>
             <p>3ドリップ目: {calcGram*0.45} g (+{calcGram*0.15}g)</p>
@@ -60,12 +60,12 @@ export default function Home() {
           <h2 className='text-lg'>コーヒの重さ (g)に対する水量の割合を設定</h2>
           <div className='flex'>
             <input type="range" step="1" min="1" max="20" value={ratio} onChange={handleRatioChange} className="accent-zinc-500 w-60"/>
-            <p className='ml-4 text-lg'>{ratio}</p>
+            <p className='ml-4 text-xl'>{ratio}</p>
           </div>
         </div>
       </main>
       <footer>
-        <h1 className=' border-y-8 border-amber-800 text-2xl text-center text-gray-800 py-3 mb-4'>🤎 enjoy your coffee time 🤎</h1>
+        <h1 className=' border-t-8 border-amber-800 text-2xl text-center text-gray-800 py-3 mb-4'>🤎 enjoy your coffee time 🤎</h1>
       </footer>
     </>
   )
