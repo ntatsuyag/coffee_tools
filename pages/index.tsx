@@ -3,6 +3,7 @@ import { Inter } from '@next/font/google'
 import React, { useState } from 'react'
 
 const inter = Inter({ subsets: ['latin'] })
+const ratio = 15
 
 export default function Home() {
   const [calcGram, setCalcGram] = useState(0)
@@ -13,7 +14,7 @@ export default function Home() {
   }
   
   const updateGram = () => {
-    setCalcGram(coffeeGram)
+    setCalcGram(coffeeGram*ratio)
   }
 
   return (
@@ -25,7 +26,7 @@ export default function Home() {
         <link rel="icon" href="/coffee.png" />
       </Head>
       <header>
-        <h1 className='text-4xl text-center bg-amber-800 text-white py-3 mb-4'>Coffee tools</h1>
+        <h1 className='text-4xl text-center bg-amber-800 text-white py-3 mb-4'>☕️ Coffee tools</h1>
       </header>
       <main>
         {/* <form action="/" method='post' className='mx-4 p-2 bg-slate-200 shadow-md'>
@@ -36,12 +37,14 @@ export default function Home() {
           <button type="submit" className='bg-amber-600 hover:bg-amber-800 text-white font-bold py-2 px-2 mt-2 rounded focus:outline-none focus:shadow-outline'>レシピ出力</button>
         </form> */}
         <div className='mx-4 p-2 bg-slate-200 shadow-md'>
-        <h1 className='text-2xl text-gray-800'>5回抽出のレシピ計算ツール</h1>
-        <h2>コーヒの重さ (g) を入力してください</h2>
+        <h1 className='text-2xl text-gray-800 font-mono'>5回抽出の水量計算ツール</h1>
+        <h2 className='text-2xl'>コーヒの重さ (g) を入力してください</h2>
         <input type="number" value={coffeeGram} onChange={handleChange} className='shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline'/>
-        <button onClick={updateGram} className='bg-amber-600 hover:bg-amber-800 text-white font-bold py-2 px-2 mt-2 rounded focus:outline-none focus:shadow-outline'>レシピ計算</button>
+        <button onClick={updateGram} className='bg-amber-600 hover:bg-amber-800 text-white text-lg font-bold py-2 px-2 mt-2 rounded focus:outline-none focus:shadow-outline'>水量計算</button>
+        <p className='mt-2'>コーヒー:水 = 1:15 の割合で水量を計算します。</p>
         <div className='text-xl mt-2'>
-          <h2 className='text-2xl'>レシピ</h2>
+          <h2 className='text-2xl'>コーヒを除いた水量</h2>
+          <p className='my-2 border-b-2 border-zinc-500'>全体の水量: {calcGram} g</p>
           <p>1ドリップ目: {calcGram*0.15} g</p>
           <p>2ドリップ目: {calcGram*0.3} g (+{calcGram*0.15}g)</p>
           <p>3ドリップ目: {calcGram*0.45} g (+{calcGram*0.15}g)</p>
