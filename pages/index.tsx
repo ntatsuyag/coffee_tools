@@ -59,7 +59,7 @@ export default function Home() {
           <h1 className='text-2xl font-mono'>🔧 設定</h1>
           <h2 className='text-lg'>コーヒの重さ (g)に対する水量の割合を設定</h2>
           <div className='flex'>
-            <input type="range" step="1" min="1" max="20" value={ratio} onChange={handleRatioChange} />
+            <input type="range" step="1" min="1" max="20" value={ratio} onChange={handleRatioChange} className="accent-zinc-500 w-60"/>
             <p className='ml-4 text-lg'>{ratio}</p>
           </div>
         </div>
