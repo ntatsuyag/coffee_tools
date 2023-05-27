@@ -9,16 +9,16 @@ export default function Home() {
   const [coffeeGram, setCoffeeGram] = useState(0)
   const [ratio, setRatio] = useState(15)
   
-  const handleChange = (event:any) => {
-    setCoffeeGram(() => event.target.value)
+  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setCoffeeGram(Number(event.target.value))
   }
   
-  const updateGram = () => {
+  const handleCalculationGram = () => {
     setCalcGram(coffeeGram*ratio)
   }
 
-  const handleRatioChange = (event:any) => {
-    setRatio(() => event.target.value)
+  const handleRatioChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setRatio(Number(event.target.value))
   }
 
   return (
@@ -36,14 +36,14 @@ export default function Home() {
         <div className='mx-4 p-2 text-gray-800 bg-slate-200 shadow-md'>
           <h1 className='text-2xl font-mono'>5回抽出の水量計算ツール</h1>
           <h2 className='text-lg'>コーヒの重さ (g) を入力 or 下のボタンから選択</h2>
-          <input type="number" min="0" value={coffeeGram} onChange={handleChange} className='shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline'/>
+          <input type="number" min="0" value={coffeeGram} onChange={handleInputChange} className='shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline'/>
           <div className='flex'>
-            <button onClick={()=>setCoffeeGram(() => 10)} className='bg-zinc-500 hover:bg-amber-600 text-white font-bold py-2 px-2 my-2 mr-2 rounded focus:outline-none focus:shadow-outline'>10g</button>
-            <button onClick={()=>setCoffeeGram(() => 20)} className='bg-zinc-500 hover:bg-amber-600 text-white font-bold py-2 px-2 my-2 mr-2 rounded focus:outline-none focus:shadow-outline'>20g</button>
-            <button onClick={()=>setCoffeeGram(() => 30)} className='bg-zinc-500 hover:bg-amber-600 text-white font-bold py-2 px-2 my-2 mr-2 rounded focus:outline-none focus:shadow-outline'>30g</button>
-            <button onClick={()=>setCoffeeGram(() => 40)} className='bg-zinc-500 hover:bg-amber-600 text-white font-bold py-2 px-2 my-2 mr-2 rounded focus:outline-none focus:shadow-outline'>40g</button>
+            <button onClick={()=>setCoffeeGram(20)} className='bg-zinc-500 hover:bg-amber-600 text-white font-bold py-2 px-2 my-2 mr-2 rounded focus:outline-none focus:shadow-outline'>20g</button>
+            <button onClick={()=>setCoffeeGram(25)} className='bg-zinc-500 hover:bg-amber-600 text-white font-bold py-2 px-2 my-2 mr-2 rounded focus:outline-none focus:shadow-outline'>25g</button>
+            <button onClick={()=>setCoffeeGram(30)} className='bg-zinc-500 hover:bg-amber-600 text-white font-bold py-2 px-2 my-2 mr-2 rounded focus:outline-none focus:shadow-outline'>30g</button>
+            <button onClick={()=>setCoffeeGram(40)} className='bg-zinc-500 hover:bg-amber-600 text-white font-bold py-2 px-2 my-2 mr-2 rounded focus:outline-none focus:shadow-outline'>40g</button>
           </div>
-          <button onClick={updateGram} className='bg-amber-600 hover:bg-amber-800 text-white text-lg font-bold py-2 px-2 mt-2 rounded focus:outline-none focus:shadow-outline'>計算</button>
+          <button onClick={handleCalculationGram} className='bg-amber-600 hover:bg-amber-800 text-white text-lg font-bold py-2 px-2 mt-2 rounded focus:outline-none focus:shadow-outline'>計算</button>
           <p className='mt-2 text-lg'>コーヒー:水 = 1:{ratio} の割合で水量を計算します。</p>
           <div className='text-xl mt-2'>
             <h2 className='text-2xl border-b-4 border-amber-800'>レシピ</h2>
