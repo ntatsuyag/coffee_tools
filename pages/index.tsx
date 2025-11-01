@@ -35,6 +35,7 @@ export default function Home() {
           <h2 className='text-lg'>コーヒの重さ (g) を入力 or 下のボタンから選択</h2>
           <input type="number" min="0" value={coffeeGram} onChange={handleInputChange} className='shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline'/>
           <div className='flex'>
+            <button onClick={()=>setCoffeeGram(15)} className='bg-zinc-500 hover:bg-amber-600 text-white font-bold py-2 px-2 my-2 mr-2 rounded focus:outline-none focus:shadow-outline'>15g</button>
             <button onClick={()=>setCoffeeGram(20)} className='bg-zinc-500 hover:bg-amber-600 text-white font-bold py-2 px-2 my-2 mr-2 rounded focus:outline-none focus:shadow-outline'>20g</button>
             <button onClick={()=>setCoffeeGram(25)} className='bg-zinc-500 hover:bg-amber-600 text-white font-bold py-2 px-2 my-2 mr-2 rounded focus:outline-none focus:shadow-outline'>25g</button>
             <button onClick={()=>setCoffeeGram(30)} className='bg-zinc-500 hover:bg-amber-600 text-white font-bold py-2 px-2 my-2 mr-2 rounded focus:outline-none focus:shadow-outline'>30g</button>
