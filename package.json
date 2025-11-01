@@ -12,6 +12,8 @@
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx --max-warnings=0"
   },
   "dependencies": {
+    "@mantine/core": "^8.3.6",
+    "@mantine/hooks": "^8.3.6",
     "@types/node": "^22.12.7",
     "@types/react": "^18.2.55",
     "@types/react-dom": "^18.2.23",
@@ -21,10 +23,5 @@
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "typescript": "^5.4.5"
-  },
-  "devDependencies": {
-    "autoprefixer": "^10.4.19",
-    "postcss": "^8.4.38",
-    "tailwindcss": "^3.4.3"
   }
 }

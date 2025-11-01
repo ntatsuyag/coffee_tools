@@ -1,22 +1,53 @@
 import Head from 'next/head'
 import React, { useState } from 'react'
+import {
+  Button,
+  Container,
+  Divider,
+  Group,
+  NumberInput,
+  Paper,
+  Slider,
+  Stack,
+  Text,
+  Title,
+} from '@mantine/core'
+
+const presetWeights = [15, 20, 25, 30, 40]
+
+const brewSteps: Array<{ label: string; multiplier: number; increment?: number }> = [
+  { label: '1ドリップ目', multiplier: 0.15 },
+  { label: '2ドリップ目', multiplier: 0.3, increment: 0.15 },
+  { label: '3ドリップ目', multiplier: 0.45, increment: 0.15 },
+  { label: '4ドリップ目', multiplier: 0.7, increment: 0.25 },
+  { label: '5ドリップ目', multiplier: 1, increment: 0.3 },
+]
+
+const formatWeight = (value: number) => (Number.isFinite(value) ? Math.round(value * 10) / 10 : 0)
 
 export default function Home() {
   const [calcGram, setCalcGram] = useState(0)
   const [coffeeGram, setCoffeeGram] = useState(0)
   const [ratio, setRatio] = useState(15)
-  
-  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setCoffeeGram(Number(event.target.value))
-  }
-  
-  const handleCalculationGram = () => {
-    setCalcGram(coffeeGram*ratio)
+
+  const handleCoffeeChange = (value: number | string) => {
+    const parsedValue = typeof value === 'number' ? value : Number(value)
+    setCoffeeGram(Number.isFinite(parsedValue) ? parsedValue : 0)
   }
 
-  const handleRatioChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setRatio(Number(event.target.value))
+  const handlePresetSelect = (value: number) => {
+    setCoffeeGram(value)
   }
+
+  const handleRatioChange = (value: number) => {
+    setRatio(Math.round(value))
+  }
+
+  const handleCalculationGram = () => {
+    setCalcGram(coffeeGram * ratio)
+  }
+
+  const totalWater = calcGram
 
   return (
     <>
@@ -26,45 +57,101 @@ export default function Home() {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/coffee.png" />
       </Head>
-      <header>
-        <h1 className='text-4xl text-center bg-amber-800 text-white py-3 mb-4'>☕️ Coffee tools</h1>
-      </header>
-      <main>
-        <div className='mx-4 p-2 text-gray-800 bg-slate-200 shadow-md'>
-          <h1 className='text-2xl font-mono'>5回抽出の水量計算ツール</h1>
-          <h2 className='text-lg'>コーヒの重さ (g) を入力 or 下のボタンから選択</h2>
-          <input type="number" min="0" value={coffeeGram} onChange={handleInputChange} className='shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline'/>
-          <div className='flex'>
-            <button onClick={()=>setCoffeeGram(15)} className='bg-zinc-500 hover:bg-amber-600 text-white font-bold py-2 px-2 my-2 mr-2 rounded focus:outline-none focus:shadow-outline'>15g</button>
-            <button onClick={()=>setCoffeeGram(20)} className='bg-zinc-500 hover:bg-amber-600 text-white font-bold py-2 px-2 my-2 mr-2 rounded focus:outline-none focus:shadow-outline'>20g</button>
-            <button onClick={()=>setCoffeeGram(25)} className='bg-zinc-500 hover:bg-amber-600 text-white font-bold py-2 px-2 my-2 mr-2 rounded focus:outline-none focus:shadow-outline'>25g</button>
-            <button onClick={()=>setCoffeeGram(30)} className='bg-zinc-500 hover:bg-amber-600 text-white font-bold py-2 px-2 my-2 mr-2 rounded focus:outline-none focus:shadow-outline'>30g</button>
-            <button onClick={()=>setCoffeeGram(40)} className='bg-zinc-500 hover:bg-amber-600 text-white font-bold py-2 px-2 my-2 mr-2 rounded focus:outline-none focus:shadow-outline'>40g</button>
-          </div>
-          <button onClick={handleCalculationGram} className='bg-amber-600 hover:bg-amber-800 text-white text-lg font-bold py-2 px-2 mt-2 rounded focus:outline-none focus:shadow-outline'>計算</button>
-          <p className='mt-2 text-lg'>コーヒー:水 = 1:{ratio} の割合で水量を計算します。</p>
-          <div className='text-xl mt-2'>
-            <h2 className='text-2xl border-b-4 border-amber-800'>レシピ</h2>
-            <p className='my-2 border-b-2 border-zinc-600 '>全水量: {calcGram} g</p>
-            <p>1ドリップ目: {calcGram*0.15} g</p>
-            <p>2ドリップ目: {calcGram*0.3} g (+{calcGram*0.15}g)</p>
-            <p>3ドリップ目: {calcGram*0.45} g (+{calcGram*0.15}g)</p>
-            <p>4ドリップ目: {calcGram*0.7} g (+{calcGram*0.25}g)</p>
-            <p>5ドリップ目: {calcGram} g (+{calcGram*0.3}g)</p>
-          </div>
-        </div>
-        <div className='m-4 p-2 text-gray-800 bg-slate-100 shadow-md'>
-          <h1 className='text-2xl font-mono'>🔧 設定</h1>
-          <h2 className='text-lg'>コーヒの重さ (g)に対する水量の割合を設定</h2>
-          <div className='flex'>
-            <input type="range" step="1" min="1" max="20" value={ratio} onChange={handleRatioChange} className="accent-zinc-500 w-60"/>
-            <p className='ml-4 text-xl'>{ratio}</p>
-          </div>
-        </div>
-      </main>
-      <footer>
-        <h1 className=' border-t-8 border-amber-800 text-2xl text-center text-gray-800 py-3 mb-4'>🤎 enjoy your coffee time 🤎</h1>
-      </footer>
+
+      <Container size="sm" py="xl">
+        <Stack gap="xl">
+          <Stack gap="xs" align="center">
+            <Title order={1}>☕️ Coffee tools</Title>
+            <Text c="dimmed">手軽にドリップレシピを計算しましょう。</Text>
+          </Stack>
+
+          <Paper withBorder shadow="md" radius="md" p="xl">
+            <Stack gap="md">
+              <Title order={2}>5回抽出の水量計算ツール</Title>
+              <Text size="sm">コーヒーの重さ (g) を入力するか、下のボタンから選択してください。</Text>
+
+              <NumberInput
+                label="コーヒーの重さ (g)"
+                min={0}
+                hideControls
+                value={coffeeGram}
+                onChange={handleCoffeeChange}
+                placeholder="例: 20"
+              />
+
+              <Group gap="xs" wrap="wrap">
+                {presetWeights.map((weight) => (
+                  <Button
+                    key={weight}
+                    variant={coffeeGram === weight ? 'filled' : 'light'}
+                    onClick={() => handlePresetSelect(weight)}
+                    size="sm"
+                  >
+                    {weight} g
+                  </Button>
+                ))}
+              </Group>
+
+              <Button onClick={handleCalculationGram} disabled={coffeeGram <= 0} size="md">
+                計算
+              </Button>
+              <Text size="sm" c="dimmed">
+                コーヒー:水 = 1:{ratio} の割合で水量を計算します。
+              </Text>
+
+              <Divider label="レシピ" labelPosition="center" />
+              <Stack gap="sm">
+                <Text fw={600}>全水量: {formatWeight(totalWater)} g</Text>
+                {brewSteps.map(({ label, multiplier, increment }) => {
+                  const amount = formatWeight(totalWater * multiplier)
+                  const incrementText =
+                    typeof increment === 'number'
+                      ? ` (+${formatWeight(totalWater * increment)}g)`
+                      : ''
+                  return (
+                    <Text key={label}>
+                      {label}: {amount} g{incrementText}
+                    </Text>
+                  )
+                })}
+              </Stack>
+            </Stack>
+          </Paper>
+
+          <Paper withBorder shadow="sm" radius="md" p="xl">
+            <Stack gap="md">
+              <Title order={2}>🔧 設定</Title>
+              <Text size="sm">コーヒーの重さ (g) に対する水量の割合を設定してください。</Text>
+
+              <Stack gap="xs">
+                <Group justify="space-between" align="center">
+                  <Text size="sm" fw={500}>
+                    割合 (1:n)
+                  </Text>
+                  <Text fw={600}>{ratio}</Text>
+                </Group>
+                <Slider
+                  min={1}
+                  max={20}
+                  step={1}
+                  marks={[
+                    { value: 5, label: '5' },
+                    { value: 10, label: '10' },
+                    { value: 15, label: '15' },
+                    { value: 20, label: '20' },
+                  ]}
+                  value={ratio}
+                  onChange={handleRatioChange}
+                />
+              </Stack>
+            </Stack>
+          </Paper>
+
+          <Text ta="center" c="dimmed">
+            🤎 enjoy your coffee time 🤎
+          </Text>
+        </Stack>
+      </Container>
     </>
   )
 }
