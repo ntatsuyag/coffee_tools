@@ -61,13 +61,17 @@ export default function Home() {
       <Container size="sm" py="xl">
         <Stack gap="xl">
           <Stack gap="xs" align="center">
-            <Title order={1}>☕️ Coffee tools</Title>
-            <Text c="dimmed">手軽にドリップレシピを計算しましょう。</Text>
+            <Title order={1} c="var(--mantine-color-coffee-7)">
+              ☕️ Coffee tools
+            </Title>
+            <Text c="var(--mantine-color-coffee-6)">手軽にドリップレシピを計算しましょう。</Text>
           </Stack>
 
-          <Paper withBorder shadow="md" radius="md" p="xl">
+          <Paper withBorder shadow="md" radius="lg" p="xl" bg="var(--mantine-color-coffee-0)">
             <Stack gap="md">
-              <Title order={2}>5回抽出の水量計算ツール</Title>
+              <Title order={2} c="var(--mantine-color-coffee-8)">
+                5回抽出の水量計算ツール
+              </Title>
               <Text size="sm">コーヒーの重さ (g) を入力するか、下のボタンから選択してください。</Text>
 
               <NumberInput
@@ -95,7 +99,7 @@ export default function Home() {
               <Button onClick={handleCalculationGram} disabled={coffeeGram <= 0} size="md">
                 計算
               </Button>
-              <Text size="sm" c="dimmed">
+              <Text size="sm" c="var(--mantine-color-coffee-6)">
                 コーヒー:水 = 1:{ratio} の割合で水量を計算します。
               </Text>
 
@@ -118,7 +122,7 @@ export default function Home() {
             </Stack>
           </Paper>
 
-          <Paper withBorder shadow="sm" radius="md" p="xl">
+          <Paper withBorder shadow="sm" radius="lg" p="xl" bg="var(--mantine-color-coffee-1)">
             <Stack gap="md">
               <Title order={2}>🔧 設定</Title>
               <Text size="sm">コーヒーの重さ (g) に対する水量の割合を設定してください。</Text>

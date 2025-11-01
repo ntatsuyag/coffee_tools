@@ -2,6 +2,10 @@ html,
 body {
   padding: 0;
   margin: 0;
+  background-color: #f7f1eb;
+  background-color: var(--mantine-color-coffee-0);
+  color: #3c2311;
+  color: var(--mantine-color-coffee-9);
 }
 
 * {
