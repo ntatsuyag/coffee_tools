@@ -1,5 +1,5 @@
 import Head from 'next/head'
-import React from 'react'
+import React, { useCallback, useMemo, useState } from 'react'
 import {
   Button,
   Container,
@@ -16,13 +16,18 @@ import { useWaterCalculation } from '../hooks/useWaterCalculation'
 
 const presetWeights = [15, 20, 25, 30, 40]
 
-const brewSteps: Array<{ label: string; multiplier: number; increment?: number }> = [
-  { label: '1ドリップ目', multiplier: 0.15 },
-  { label: '2ドリップ目', multiplier: 0.3, increment: 0.15 },
-  { label: '3ドリップ目', multiplier: 0.45, increment: 0.15 },
-  { label: '4ドリップ目', multiplier: 0.7, increment: 0.25 },
-  { label: '5ドリップ目', multiplier: 1, increment: 0.3 },
+const DEFAULT_BREW_STEP_COUNT = 3
+const brewStepTemplates: Array<{ label: string; defaultMultiplier: number }> = [
+  { label: '1ドリップ目', defaultMultiplier: 0.15 },
+  { label: '2ドリップ目', defaultMultiplier: 0.3 },
+  { label: '3ドリップ目', defaultMultiplier: 0.45 },
+  { label: '4ドリップ目', defaultMultiplier: 0.7 },
+  { label: '5ドリップ目', defaultMultiplier: 1 },
 ]
+const brewStepMarks = brewStepTemplates.map((_, index) => ({
+  value: index + 1,
+  label: String(index + 1),
+}))
 
 const formatWeight = (value: number) => (Number.isFinite(value) ? Math.round(value * 10) / 10 : 0)
 
@@ -35,6 +40,65 @@ export default function Home() {
     handlePresetSelect,
     handleRatioChange,
   } = useWaterCalculation()
+  const [brewStepCount, setBrewStepCount] = useState(DEFAULT_BREW_STEP_COUNT)
+  const [brewStepMultipliers, setBrewStepMultipliers] = useState(() =>
+    brewStepTemplates.map(({ defaultMultiplier }) => defaultMultiplier)
+  )
+  const { activeBrewSteps, sanitizedMultipliers } = useMemo(() => {
+    const sanitized: number[] = []
+    brewStepTemplates.forEach(({ defaultMultiplier }, index) => {
+      const rawValue = brewStepMultipliers[index] ?? defaultMultiplier
+      const clamped = Math.min(Math.max(rawValue, 0), 1)
+      const previous = index === 0 ? 0 : sanitized[index - 1]
+      sanitized[index] = Math.max(clamped, previous)
+    })
+    const steps = sanitized.slice(0, brewStepCount).map((multiplier, index) => {
+      const previous = index === 0 ? 0 : sanitized[index - 1]
+      const diff = multiplier - previous
+      return {
+        label: brewStepTemplates[index].label,
+        multiplier,
+        increment: index === 0 || diff <= 0 ? undefined : diff,
+      }
+    })
+    return { activeBrewSteps: steps, sanitizedMultipliers: sanitized }
+  }, [brewStepCount, brewStepMultipliers])
+  const handleBrewStepCountChange = useCallback((value: number) => {
+    const normalized = Math.max(1, Math.min(brewStepTemplates.length, Math.round(value)))
+    setBrewStepCount(normalized)
+    setBrewStepMultipliers((prev) => {
+      const next = [...prev]
+      for (let i = 1; i < normalized; i += 1) {
+        if (next[i] < next[i - 1]) {
+          next[i] = next[i - 1]
+        }
+      }
+      return next
+    })
+  }, [])
+  const handleBrewStepMultiplierChange = useCallback(
+    (index: number) => (value: number | string) => {
+      const parsed =
+        typeof value === 'number' ? value : Number.isFinite(Number(value)) ? Number(value) : NaN
+      if (!Number.isFinite(parsed)) return
+      setBrewStepMultipliers((prev) => {
+        const next = [...prev]
+        const lowerBound = index === 0 ? 0 : next[index - 1]
+        const newValue = Math.min(Math.max(parsed, lowerBound), 1)
+        if (next[index] === newValue) return prev
+        next[index] = newValue
+        for (let i = index + 1; i < next.length; i += 1) {
+          if (next[i] < next[i - 1]) {
+            next[i] = next[i - 1]
+          } else {
+            break
+          }
+        }
+        return next
+      })
+    },
+    []
+  )
 
   return (
     <>
@@ -57,7 +121,7 @@ export default function Home() {
           <Paper withBorder shadow="md" radius="lg" p="xl" bg="var(--mantine-color-coffee-0)">
             <Stack gap="md">
               <Title order={2} c="var(--mantine-color-coffee-8)">
-                5回抽出の水量計算ツール
+                {brewStepCount}回抽出の水量計算ツール
               </Title>
               <Text size="sm">コーヒーの重さ (g) を入力するか、下のボタンから選択してください。</Text>
 
@@ -89,7 +153,7 @@ export default function Home() {
               <Divider label="レシピ" labelPosition="center" />
               <Stack gap="sm">
                 <Text fw={600}>全水量: {formatWeight(totalWater)} g</Text>
-                {brewSteps.map(({ label, multiplier, increment }) => {
+                {activeBrewSteps.map(({ label, multiplier, increment }) => {
                   const amount = formatWeight(totalWater * multiplier)
                   const incrementText =
                     typeof increment === 'number'
@@ -130,6 +194,42 @@ export default function Home() {
                   value={ratio}
                   onChange={handleRatioChange}
                 />
+              </Stack>
+              <Stack gap="xs">
+                <Group justify="space-between" align="center">
+                  <Text size="sm" fw={500}>
+                    抽出回数
+                  </Text>
+                  <Text fw={600}>{brewStepCount}</Text>
+                </Group>
+                <Slider
+                  min={1}
+                  max={brewStepTemplates.length}
+                  step={1}
+                  marks={brewStepMarks}
+                  value={brewStepCount}
+                  onChange={handleBrewStepCountChange}
+                />
+              </Stack>
+              <Stack gap="xs">
+                <Text size="sm" fw={500}>
+                  抽出率設定 (累計比率)
+                </Text>
+                {activeBrewSteps.map((step, index) => (
+                  <NumberInput
+                    key={step.label}
+                    label={step.label}
+                    min={0}
+                    max={1}
+                    step={0.05}
+                    hideControls
+                    value={sanitizedMultipliers[index]}
+                    onChange={handleBrewStepMultiplierChange(index)}
+                  />
+                ))}
+                <Text size="xs" c="dimmed">
+                  0〜1の範囲で調整できます。後ろのステップほど前のステップ以上の値が維持されます。
+                </Text>
               </Stack>
             </Stack>
           </Paper>
