@@ -1,5 +1,5 @@
 import Head from 'next/head'
-import React, { useState } from 'react'
+import React from 'react'
 import {
   Button,
   Container,
@@ -12,6 +12,7 @@ import {
   Text,
   Title,
 } from '@mantine/core'
+import { useWaterCalculation } from '../hooks/useWaterCalculation'
 
 const presetWeights = [15, 20, 25, 30, 40]
 
@@ -26,28 +27,14 @@ const brewSteps: Array<{ label: string; multiplier: number; increment?: number }
 const formatWeight = (value: number) => (Number.isFinite(value) ? Math.round(value * 10) / 10 : 0)
 
 export default function Home() {
-  const [calcGram, setCalcGram] = useState(0)
-  const [coffeeGram, setCoffeeGram] = useState(0)
-  const [ratio, setRatio] = useState(15)
-
-  const handleCoffeeChange = (value: number | string) => {
-    const parsedValue = typeof value === 'number' ? value : Number(value)
-    setCoffeeGram(Number.isFinite(parsedValue) ? parsedValue : 0)
-  }
-
-  const handlePresetSelect = (value: number) => {
-    setCoffeeGram(value)
-  }
-
-  const handleRatioChange = (value: number) => {
-    setRatio(Math.round(value))
-  }
-
-  const handleCalculationGram = () => {
-    setCalcGram(coffeeGram * ratio)
-  }
-
-  const totalWater = calcGram
+  const {
+    coffeeGram,
+    ratio,
+    totalWater,
+    handleCoffeeChange,
+    handlePresetSelect,
+    handleRatioChange,
+  } = useWaterCalculation()
 
   return (
     <>
@@ -95,10 +82,6 @@ export default function Home() {
                   </Button>
                 ))}
               </Group>
-
-              <Button onClick={handleCalculationGram} disabled={coffeeGram <= 0} size="md">
-                計算
-              </Button>
               <Text size="sm" c="var(--mantine-color-coffee-6)">
                 コーヒー:水 = 1:{ratio} の割合で水量を計算します。
               </Text>
